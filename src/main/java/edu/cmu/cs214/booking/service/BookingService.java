@@ -6,7 +6,10 @@ import edu.cmu.cs214.booking.domain.TimeInterval;
 import edu.cmu.cs214.booking.domain.User;
 import edu.cmu.cs214.booking.domain.WaitlistEntry;
 import edu.cmu.cs214.booking.repo.BookingStore;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Coordinates bookings and the waitlist. Enforces the core invariant: a room
@@ -62,7 +65,31 @@ public class BookingService {
      * is promoted to a confirmed booking; at most one is promoted per cancel.
      */
     public void cancelBooking(String bookingId) {
+        Optional<Booking> cancelled = store.findBooking(bookingId);
+        if (cancelled.isEmpty()) {
+            return;
+        }
+        Room room = cancelled.get().room();
         store.removeBooking(bookingId);
+
+        List<WaitlistEntry> waiters = new ArrayList<>(store.waitlistForRoom(room));
+        waiters.sort(Comparator.comparingInt(WaitlistEntry::seq));
+        for (WaitlistEntry w : waiters) {
+            boolean fits = true;
+            for (Booking b : store.bookingsForRoom(room)) {
+                if (b.interval().overlaps(w.interval())) {
+                    fits = false;
+                    break;
+                }
+            }
+            if (fits) {
+                Booking promoted =
+                        new Booking("b" + nextBookingSeq++, room, w.user(), w.interval());
+                store.addBooking(promoted);
+                store.removeWaitlistEntry(w.id());
+                break;
+            }
+        }
     }
 
     /** Returns the confirmed bookings for {@code room}. */

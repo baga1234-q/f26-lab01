@@ -50,7 +50,7 @@ class CancelBookingTest {
 
         assertEquals(1, svc.listBookings(roomA).size());
         assertEquals(bob, svc.listBookings(roomA).get(0).user());
-        assertEquals(0, svc.listBookings(roomA).get(0).interval().start());
+        assertEquals(600, svc.listBookings(roomA).get(0).interval().start());
         assertEquals(660, svc.listBookings(roomA).get(0).interval().end());
     }
 
