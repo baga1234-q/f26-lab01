@@ -56,6 +56,15 @@ public class BookingService {
         return true;
     }
 
+    /**
+     * Cancels the confirmed booking with {@code bookingId}. A missing id is a
+     * no-op. After removal, the earliest waiting user whose interval now fits
+     * is promoted to a confirmed booking; at most one is promoted per cancel.
+     */
+    public void cancelBooking(String bookingId) {
+        store.removeBooking(bookingId);
+    }
+
     /** Returns the confirmed bookings for {@code room}. */
     public List<Booking> listBookings(Room room) {
         return store.bookingsForRoom(room);
