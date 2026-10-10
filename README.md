@@ -25,3 +25,13 @@ By the way: the fix may not be where the failing test first points you. :-)
 - Transcript export script (for Claude Code; modify if using a different tool): `tools/export-transcripts.sh` (the handout tells you when to run it)
 
 See the Lab 1 handout on the course page for the three milestones you show a TA.
+
+## Tooling and models used for this lab
+
+- Agent: Doubao (Doubao Work, agent mode) — driving diagnosis, patch review,
+  cancelBooking implementation, and test authoring.
+- Toolchain: Microsoft OpenJDK 25 (`.jdks/ms-25.0.3`), Apache Maven 3.9.6,
+  JUnit Jupiter 5.10.2.
+- Local transcripts are exported under `transcripts/` and are git-ignored per
+  `.gitignore`; they are shown to the TA at recitation but not pushed.
+
