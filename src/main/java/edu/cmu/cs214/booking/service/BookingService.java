@@ -42,6 +42,20 @@ public class BookingService {
         return new BookingResult.Confirmed(booking);
     }
 
+    /**
+     * Reports whether {@code room} is free over {@code interval}. The clash
+     * decision is delegated to {@link TimeInterval#overlaps}, the single place
+     * the overlap rule lives per ARCHITECTURE.md.
+     */
+    public boolean isAvailable(Room room, TimeInterval interval) {
+        for (Booking b : store.bookingsForRoom(room)) {
+            if (b.interval().overlaps(interval)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /** Returns the confirmed bookings for {@code room}. */
     public List<Booking> listBookings(Room room) {
         return store.bookingsForRoom(room);
